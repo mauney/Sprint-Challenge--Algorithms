@@ -92,13 +92,77 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+    def sort_working(self):
+        """
+        Sort the robot's list.
+        """
+        # make sure light is off
+        self.set_light_off()
+
+        # outer loop:
+        # check if light is on == sorted list; end loop if so
+        while not self.light_is_on():
+            # move left to beginning
+            while self.can_move_left():
+                self.move_left()
+            # once at start, turn light on
+            self.set_light_on()
+
+            # inner loop: stop when robot reaches end of list
+            while self.can_move_right():
+                # pick up item
+                self.swap_item()
+                # move right
+                self.move_right()
+                # compare items
+                if self.compare_item() == 1:
+                    # swap if necessary, and turn light off if swapped
+                    self.swap_item()
+                    self.set_light_off()
+                # move left
+                self.move_left()
+                # place item
+                self.swap_item()
+                # move right
+                self.move_right()
+        
+        return
+
     def sort(self):
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        # make sure light is off
+        self.set_light_off()
 
+        # outer loop:
+        # check if light is on == sorted list; end loop if so
+        while not self.light_is_on():
+            # move left to beginning
+            while self.can_move_left():
+                self.move_left()
+            # once at start, turn light on
+            self.set_light_on()
+
+            # inner loop: stop when robot reaches end of list
+            while self.can_move_right():
+                # pick up item
+                self.swap_item()
+                # move right
+                self.move_right()
+                # compare items
+                if self.compare_item() == 1:
+                    # swap if necessary, and turn light off if swapped
+                    self.swap_item()
+                    self.set_light_off()
+                # move left
+                self.move_left()
+                # place item
+                self.swap_item()
+                # move right
+                self.move_right()
+        
+        return
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
