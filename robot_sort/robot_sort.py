@@ -92,7 +92,7 @@ class SortingRobot:
         """
         return self._light == "ON"
 
-    def sort_working(self):
+    def sort_non_stretch(self):
         """
         Sort the robot's list.
         """
@@ -132,24 +132,33 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # make sure light is off
-        self.set_light_off()
+        # start with light on for sorted list until proven otherwise
+        self.set_light_on()
 
         # outer loop:
-        # check if light is on == sorted list; end loop if so
-        while not self.light_is_on():
-            # move left to beginning
-            while self.can_move_left():
-                self.move_left()
-            # once at start, turn light on
-            self.set_light_on()
+        while True:
 
-            # inner loop: stop when robot reaches end of list
+            # inner loop moving right: stop when robot reaches end of list
             while self.can_move_right():
                 # pick up item
                 self.swap_item()
                 # move right
                 self.move_right()
+
+                # check if this is the last compare for this cycle
+                # n.b. this is an ugly hack to save one time increase per cycle
+                if not self.can_move_right():
+                    # compare items
+                    if self.compare_item() == 1:
+                        # swap if necessary, and turn light off if swapped
+                        self.swap_item()
+                        self.set_light_off()
+                    # move left
+                    self.move_left()
+                    # place item
+                    self.swap_item()
+                    break
+
                 # compare items
                 if self.compare_item() == 1:
                     # swap if necessary, and turn light off if swapped
@@ -161,8 +170,54 @@ class SortingRobot:
                 self.swap_item()
                 # move right
                 self.move_right()
+            
+            # check light and either break or reset
+            if self.light_is_on():
+                return # list is sorted
+            else:
+                self.set_light_on()
+
+            # inner loop moving left: stop when robot reaches start of list
+            while self.can_move_left():
+                # pick up item
+                self.swap_item()
+                # move left
+                self.move_left()
+
+                # check if this is the last compare for this cycle
+                # n.b. this is an ugly hack to save one time increase per cycle
+                if not self.can_move_left():
+                    # compare items
+                    if self.compare_item() == -1:
+                        # swap if necessary, and turn light off if swapped
+                        self.swap_item()
+                        self.set_light_off()
+                    # move right
+                    self.move_right()
+                    # place item
+                    self.swap_item()
+                    break
+
+                # compare items
+                if self.compare_item() == -1:
+                    # swap if necessary, and turn light off if swapped
+                    self.swap_item()
+                    self.set_light_off()
+                # move right
+                self.move_right()
+                # place item
+                self.swap_item()
+                # move left
+                self.move_left()
+
+            # check light and either break or reset
+            if self.light_is_on():
+                return # list is sorted
+            else:
+                self.set_light_on()
         
         return
+
 
 if __name__ == "__main__":
     # Test our your implementation from the command line

@@ -26,4 +26,4 @@ If it does not break, eliminate all floors below the current floor from the viab
 
 Repeat dropping eggs from the new test-drop floor until only one floor remains in the viable list. When that happens, the sole remaining floor is the highest floor from which one can safely drop an egg - floor f.
 
-By halfing the number of remaining options each time, the worst-case number of eggs used is about log-base2(n-stories).
+By halfing the number of remaining options each time, the worst-case number of eggs used is about log-base2(n-stories). This results in a runtime of O(log(n)).
