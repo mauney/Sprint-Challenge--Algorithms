@@ -92,7 +92,7 @@ class SortingRobot:
         """
         return self._light == "ON"
 
-    def sort_non_stretch(self):
+    def sort_bubble_oneway(self):
         """
         Sort the robot's list.
         """
@@ -128,7 +128,7 @@ class SortingRobot:
         
         return
 
-    def sort(self):
+    def sort_bubble(self):
         """
         Sort the robot's list.
         """
@@ -218,13 +218,91 @@ class SortingRobot:
         
         return
 
+    def sort_selection(self):
+        """
+        Sort the robot's list.
+        """
+        self.swap_item()
+
+        while True:
+            # move to the right and find our smallest item that hasn't been sorted
+            while self.can_move_right():
+                self.move_right()
+                if self.compare_item() > 0:
+                    self.swap_item()
+            # if the item is at the end of the list and all items are sorted we are finished
+            if self.compare_item() is None:
+                self.swap_item()
+                return
+            else:
+                # find spot in list with None, place item in that position, move right and swap
+                while self.move_left():
+                    if self.compare_item() is None:
+                        self.swap_item()
+                        self.move_right()
+                        self.swap_item()
+                        break
+
+    def sort_insertion(self):
+        """
+        Sort the robot's list.
+        """
+        # stop when last item has been inserted
+        while self.can_move_right():
+        # move right and pick up item
+            self.move_right()
+            self.swap_item()
+        # move left to find place to insert
+            while self.can_move_left():
+                self.move_left()
+                # if robot item is greater or equal to position item
+                # or robot is at far left position
+                if self.compare_item() > -1 or self.can_move_left() == False:
+                    # swap items if needed (possible far left condition)
+                    if self.compare_item() == -1:
+                        self.swap_item()
+                    # swap items moving right up to empty spot
+                    while self.compare_item() is not None:
+                        self.move_right()
+                        self.swap_item()
+                    break
+
+        return
+
+    def sort(self):
+        """
+        Sort the robot's list.
+        This is a copyt of sort_insertion()
+        """
+        # stop when last item has been inserted
+        while self.can_move_right():
+        # move right and pick up item
+            self.move_right()
+            self.swap_item()
+        # move left to find place to insert
+            while self.can_move_left():
+                self.move_left()
+                # if robot item is greater or equal to position item
+                # or robot is at far left position
+                if self.compare_item() > -1 or self.can_move_left() == False:
+                    # swap items if needed (possible far left condition)
+                    if self.compare_item() == -1:
+                        self.swap_item()
+                    # swap items moving right up to empty spot
+                    while self.compare_item() is not None:
+                        self.move_right()
+                        self.swap_item()
+                    break
+
+        return
+
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
     l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
-
+    
     robot = SortingRobot(l)
 
     robot.sort()
